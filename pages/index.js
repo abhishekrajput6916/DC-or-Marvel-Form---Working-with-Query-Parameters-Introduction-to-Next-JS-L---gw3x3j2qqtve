@@ -6,20 +6,38 @@ import Summary from './Summary';
 
 const App = () => {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    age:'',
+    type:"",
+    DS:"",
+    MS:"",
+    step:'',
+  });
   const [age, setAge] = useState('');
+
+  useEffect(()=>{
+    setFormData(oldData=>{
+      return {
+        ...oldData,
+        age:age,
+        step:step,
+      }
+    })
+    console.log(step);
+  },[age,step])
 
   return (
     <div>
-      {(step === 1 || !age) && (
+      {(step === 1) && (
         <div id='start-page'>
           <h1>Step 1: Select Form Type and Enter Age</h1>
-          <label>
-            Enter your age:
-            <input value={age} />
-          </label>
+          <label htmlFor="age">
+            Enter your age:</label>
+            <input id="age" type="number" onChange={(e)=>{
+              setAge(parseInt(e.target.value));
+            }} value={age} />
           <br />
-          <label>
+          <label> 
             Select Form Type:
             <select onChange={(e) => setStep(parseInt(e.target.value))}>
               <option value={1}>--Select--</option>
@@ -30,26 +48,26 @@ const App = () => {
           <br />
         </div>
       )}
-      {step === 2 && (
+      {(step === 2 && age) ?(
         <div>
-          <FormA age={age} />
-        </div>
-      )}
-      {step === 3 && (
+        <FormA onSubmit={setFormData} setStep={setStep} age={age} />
+      </div>        
+      ):null}
+      {(step === 3 && age)? (
         <div>
-          <FormB age={age} />
+          <FormB onSubmit={setFormData} setStep={setStep} age={age} />
         </div>
-      )}
+      ):null}
       {(step === 2 || step === 3) && age ? (
-        <button id='go-back' onClick={() => setStep(1)}>
+        <button id='go-back' onClick={() => {setStep(1);setAge('')}}>
           Go Back
         </button>
       ) : null}
 
       {step === 4 && (
         <div>
-          <Summary />
-          <button id='start-over'>Start Over</button>
+          <Summary formData={formData}/>
+          <button onClick={() =>{ setStep(1); setAge('')}} id='start-over'>Start Over</button>
         </div>
       )}
     </div>
@@ -57,3 +75,4 @@ const App = () => {
 };
 
 export default App;
+
