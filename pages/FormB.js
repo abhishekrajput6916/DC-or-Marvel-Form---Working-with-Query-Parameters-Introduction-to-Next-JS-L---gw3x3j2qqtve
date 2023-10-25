@@ -1,16 +1,29 @@
 'use client';
 import { useState, useEffect } from 'react';
-function FormB({ onSubmit, age }) {
-  const [marvelShows, setMarvelShows] = useState('');
+function FormB({ onSubmit, setStep, age }) {
+  const [show, setShow] = useState('');
 
-  const handleSubmit = (event) => {};
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onSubmit(oldData=>{
+      return {
+        ...oldData,
+        type:"FormB",
+        MS:show,
+        step:3,
+      }
+    })
+    setStep(4);
+  };
 
   return (
-    <form id='marvel'>
+    <form id='marvel' onSubmit={handleSubmit}>
       <h2>Form B</h2>
       <label>
         Select Marvel Shows:
-        <select>
+        <select onChange={(e)=>{
+          setShow(e.target.value)
+        }}> 
           <option value=''>--Select--</option>
           <option value='WandaVision'>WandaVision</option>
           <option value='The Falcon and the Winter Soldier'>
@@ -33,3 +46,4 @@ function FormB({ onSubmit, age }) {
   );
 }
 export default FormB;
+
